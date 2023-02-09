@@ -11,12 +11,17 @@ from dataset import ConveyorSimulator
 from metrics import AccuracyMetric, MeanAveragePrecisionMetric, SegmentationIntersectionOverUnionMetric
 from visualizer import Visualizer
 
+from models.classification_network import ClassificationNetwork
+from models.detection_network import DetectionNetwork
+from models.segmentation_network import SegmentationNetwork
+
 TRAIN_VALIDATION_SPLIT = 0.9
 CLASS_PROBABILITY_THRESHOLD = 0.5
 INTERSECTION_OVER_UNION_THRESHOLD = 0.5
 CONFIDENCE_THRESHOLD = 0.5
 SEGMENTATION_BACKGROUND_CLASS = 3
 
+torch.set_printoptions(edgeitems=53)
 
 class ConveyorCnnTrainer():
     def __init__(self, args):
@@ -44,27 +49,21 @@ class ConveyorCnnTrainer():
 
     def _create_model(self, task):
         if task == 'classification':
-            # À compléter
-            raise NotImplementedError()
+            return ClassificationNetwork()
         elif task == 'detection':
-            # À compléter
-            raise NotImplementedError()
+            return DetectionNetwork()
         elif task == 'segmentation':
-            # À compléter
-            raise NotImplementedError()
+            return SegmentationNetwork()
         else:
             raise ValueError('Not supported task')
 
     def _create_criterion(self, task):
         if task == 'classification':
-            # À compléter
-            raise NotImplementedError()
+            return torch.nn.CrossEntropyLoss()
         elif task == 'detection':
-            # À compléter
-            raise NotImplementedError()
+            return torch.nn.MSELoss()
         elif task == 'segmentation':
-            # À compléter
-            raise NotImplementedError()
+            return torch.nn.CrossEntropyLoss()
         else:
             raise ValueError('Not supported task')
 
@@ -246,9 +245,25 @@ class ConveyorCnnTrainer():
                 Si un 0 est présent à (i, 2), aucune croix n'est présente dans l'image i.
         :return: La valeur de la fonction de coût pour le lot
         """
+        optimizer.zero_grad()
 
-        # À compléter
-        raise NotImplementedError()
+        prediction = model(image)
+
+        if task == 'classification':
+            raise ValueError('Not implemented yet')
+        elif task == 'detection':
+            raise ValueError('Not implemented yet')
+        elif task == 'segmentation':
+            target = segmentation_target
+        else:
+            raise ValueError('Not supported task')
+
+        metric(prediction, target)
+
+        loss = criterion(prediction, target)
+        loss.backward()
+
+        optimizer.step()
 
     def _test_batch(self, task, model, criterion, metric, image, segmentation_target, boxes, class_labels):
         """
