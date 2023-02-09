@@ -4,12 +4,15 @@ import os
 
 import numpy as np
 import torch
+import torch.nn as nn
 import torch.optim as optim
 from torchvision import transforms
 
 from dataset import ConveyorSimulator
 from metrics import AccuracyMetric, MeanAveragePrecisionMetric, SegmentationIntersectionOverUnionMetric
 from visualizer import Visualizer
+
+from loss_function import LocalizationLoss
 
 from models.classification_network import ClassificationNetwork
 from models.detection_network import DetectionNetwork
@@ -62,7 +65,9 @@ class ConveyorCnnTrainer():
             # return torch.nn.CrossEntropyLoss() # good for single-class detection, TODO: test by looping and summing loss for each class
             return torch.nn.BCEWithLogitsLoss() # better for multi-class detection
         elif task == 'detection':
-            return torch.nn.MSELoss()
+            # TODO custom criterion of regression + classification
+            # return torch.nn.MSELoss()
+            return LocalizationLoss(alpha=2)
         elif task == 'segmentation':
             return torch.nn.CrossEntropyLoss()
         else:
@@ -253,8 +258,13 @@ class ConveyorCnnTrainer():
         if task == 'classification':
             target = class_labels
         elif task == 'detection':
+            # TEST: prediction = prediction.view(-1, 5)
+            prediction = prediction.view(prediction.shape[0], 3, -1)
             target = boxes
         elif task == 'segmentation':
+            prediction = nn.functional.interpolate(prediction, scale_factor=1 / 4.83, mode='bilinear')
+            # devrait avoir 4 channel (0: triangle, 1: rectangle, 2: cross, 3: rien)
+            # resize de 32x4x53x43 a 32x53x53 avec l'indice du channel max
             target = segmentation_target
         else:
             raise ValueError('Not supported task')
@@ -311,6 +321,8 @@ class ConveyorCnnTrainer():
         if task == 'classification':
             target = class_labels
         elif task == 'detection':
+            # TODO: duplication hack, do something better
+            prediction = prediction.view(prediction.shape[0], 3, -1)
             target = boxes
         elif task == 'segmentation':
             target = segmentation_target

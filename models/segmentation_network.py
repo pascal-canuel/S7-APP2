@@ -10,6 +10,10 @@ class SegmentationNetwork(nn.Module):
 
         self.hidden = 32
 
+        # Upscale image from 53x53 to 256x256
+        ratio = 4.84
+        self.upscale = nn.Upsample(scale_factor=ratio, mode='bilinear')
+
         # Down 1
         self.conv_1_1 = nn.Conv2d(in_channels=INPUT_CHANNELS, out_channels=32, kernel_size=(3, 3), padding=1, stride=1)
         self.relu_1_1 = nn.ReLU()
@@ -75,8 +79,11 @@ class SegmentationNetwork(nn.Module):
         self.output_conv = nn.Conv2d(self.hidden, N_CLASSES, kernel_size=1)
 
     def forward(self, x):
+        # Upscale from 53x53 to 256x256
+        x_scaled = self.upscale(x)
+
         # Down 1
-        y = self.conv_1_1(x)
+        y = self.conv_1_1(x_scaled)
         y = self.relu_1_1(y)
         y = self.conv_1_2(y)
         y = self.relu_1_2(y)
