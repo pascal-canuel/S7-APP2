@@ -59,7 +59,8 @@ class ConveyorCnnTrainer():
 
     def _create_criterion(self, task):
         if task == 'classification':
-            return torch.nn.CrossEntropyLoss()
+            # return torch.nn.CrossEntropyLoss()
+            return torch.nn.BCEWithLogitsLoss()
         elif task == 'detection':
             return torch.nn.MSELoss()
         elif task == 'segmentation':
@@ -250,20 +251,22 @@ class ConveyorCnnTrainer():
         prediction = model(image)
 
         if task == 'classification':
-            raise ValueError('Not implemented yet')
+            target = class_labels
         elif task == 'detection':
-            raise ValueError('Not implemented yet')
+            target = boxes
         elif task == 'segmentation':
             target = segmentation_target
         else:
             raise ValueError('Not supported task')
 
-        metric(prediction, target)
+        metric.accumulate(prediction, target)
 
         loss = criterion(prediction, target)
         loss.backward()
 
         optimizer.step()
+
+        return loss
 
     def _test_batch(self, task, model, criterion, metric, image, segmentation_target, boxes, class_labels):
         """
@@ -303,8 +306,22 @@ class ConveyorCnnTrainer():
         :return: La valeur de la fonction de coût pour le lot
         """
 
-        # À compléter
-        raise NotImplementedError()
+        prediction = model(image)
+
+        if task == 'classification':
+            target = class_labels
+        elif task == 'detection':
+            target = boxes
+        elif task == 'segmentation':
+            target = segmentation_target
+        else:
+            raise ValueError('Not supported task')
+
+        metric.accumulate(prediction, target)
+
+        loss = criterion(prediction, target)
+
+        return loss
 
 
 if __name__ == '__main__':

@@ -3,6 +3,7 @@ import torch.nn as nn
 
 from constants import INPUT_CHANNELS, N_CLASSES
 
+
 class SegmentationNetwork(nn.Module):
     def __init__(self):
         super(SegmentationNetwork, self).__init__()
