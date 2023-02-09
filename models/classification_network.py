@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+import torchvision.models.resnet
 
 from constants import INPUT_CHANNELS, N_CLASSES
 
@@ -31,3 +32,10 @@ class ClassificationNetwork(nn.Module):
         out = self.fc9(flat)
 
         return out
+
+
+# CLASSIFICATION_NETWORK = nn.Sequential(
+#     torchvision.models.resnet.resnet18(weights=torchvision.models.ResNet18_Weights.DEFAULT),
+#     nn.Linear(1000, 4),
+#     nn.Sigmoid(),
+# )
