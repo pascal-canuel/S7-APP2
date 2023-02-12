@@ -3,6 +3,9 @@ import torch.nn as nn
 
 from constants import INPUT_CHANNELS, N_CLASSES
 
+# Based from YOLO
+# Specs: max 400k parameters
+# Goal: mAP > 0.35
 
 class DetectionNetwork(nn.Module):
     def __init__(self):

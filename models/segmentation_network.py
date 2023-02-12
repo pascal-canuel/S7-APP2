@@ -3,6 +3,9 @@ import torch.nn as nn
 
 from constants import INPUT_CHANNELS, N_CLASSES
 
+# Based from U-Net
+# Specs: max 1M parameters
+# Goal: IoU > 0.8
 
 class SegmentationNetwork(nn.Module):
     def __init__(self):
