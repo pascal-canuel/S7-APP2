@@ -62,14 +62,11 @@ class ConveyorCnnTrainer():
 
     def _create_criterion(self, task):
         if task == 'classification':
-            # return torch.nn.CrossEntropyLoss() # good for single-class detection, TODO: test by looping and summing loss for each class
-            return torch.nn.BCEWithLogitsLoss() # better for multi-class detection
+            return torch.nn.BCELoss(reduction='sum')
         elif task == 'detection':
-            # TODO custom criterion of regression + classification
-            # return torch.nn.MSELoss()
             return LocalizationLoss(alpha=2)
         elif task == 'segmentation':
-            return torch.nn.CrossEntropyLoss()
+            return torch.nn.CrossEntropyLoss(reduction='sum')
         else:
             raise ValueError('Not supported task')
 
