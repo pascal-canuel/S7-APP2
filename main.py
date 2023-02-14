@@ -64,7 +64,7 @@ class ConveyorCnnTrainer():
         if task == 'classification':
             return torch.nn.BCELoss(reduction='sum')
         elif task == 'detection':
-            return LocalizationLoss(alpha=2)
+            return LocalizationLoss(alpha=5, beta=0.5)
         elif task == 'segmentation':
             return torch.nn.CrossEntropyLoss(reduction='sum')
         else:

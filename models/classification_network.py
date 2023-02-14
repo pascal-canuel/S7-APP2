@@ -22,12 +22,10 @@ class ClassificationNetwork(nn.Module):
         self.maxpool_5 = nn.MaxPool2d(kernel_size=(3, 3), stride=2)
         self.lin_6 = nn.Linear(in_features=8 * 26 * 26, out_features=32)
         self.relu_6 = nn.ReLU()
-        self.lin_7 = nn.Linear(in_features=32, out_features=32)
+        self.lin_7 = nn.Linear(in_features=32, out_features=64)
         self.relu_7 = nn.ReLU()
-        self.lin_8 = nn.Linear(in_features=32, out_features=64)
-        self.relu_8 = nn.ReLU()
-        self.lin_9 = nn.Linear(in_features=64, out_features=N_CLASSES)
-        self.sigmoid_9 = nn.Sigmoid()
+        self.lin_8 = nn.Linear(in_features=64, out_features=N_CLASSES)
+        self.sigmoid_8 = nn.Sigmoid()
 
     def forward(self, x):
         y = self.conv_1_1(x)
@@ -47,9 +45,7 @@ class ClassificationNetwork(nn.Module):
         y = self.lin_7(y)
         y = self.relu_7(y)
         y = self.lin_8(y)
-        y = self.relu_8(y)
-        y = self.lin_9(y)
-        y = self.sigmoid_9(y)
+        y = self.sigmoid_8(y)
         out = y
 
         return out
