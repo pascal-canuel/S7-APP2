@@ -18,7 +18,13 @@ class Visualizer:
 
         base_path = os.path.dirname(__file__)
         self._learning_curves_path = os.path.join(base_path, 'figures', f'{mode}_{self._task}_learning_curves.png')
+
         self._prediction_path = os.path.join(base_path, 'figures', f'{mode}_{self._task}_prediction.png')
+        self._base_path = base_path
+        self._mode = mode
+
+    def set_prediction_path(self, idx):
+        self._prediction_path = os.path.join(self._base_path, 'figures', f'{self._task}/{self._mode}_{self._task}_prediction_{idx}.png')
 
     def show_learning_curves(self, epochs_train_losses, epochs_validation_losses,
                              epochs_train_metrics, epochs_validation_metrics, metric_name):
@@ -68,19 +74,19 @@ class Visualizer:
         ax = fig.add_subplot(111)
 
         predicted_shapes = ''
-        if prediction[0] >= self._class_probability_threshold:
+        if prediction[0] > self._class_probability_threshold:
             predicted_shapes += 'Circle '
-        if prediction[1] >= self._class_probability_threshold:
+        if prediction[1] > self._class_probability_threshold:
             predicted_shapes += 'Triangle '
-        if prediction[2] >= self._class_probability_threshold:
+        if prediction[2] > self._class_probability_threshold:
             predicted_shapes += 'Cross '
 
         target_shapes = ''
-        if class_labels[0] >= self._class_probability_threshold:
+        if class_labels[0] > self._class_probability_threshold:
             target_shapes += 'Circle '
-        if class_labels[1] >= self._class_probability_threshold:
+        if class_labels[1] > self._class_probability_threshold:
             target_shapes += 'Triangle '
-        if class_labels[2] >= self._class_probability_threshold:
+        if class_labels[2] > self._class_probability_threshold:
             target_shapes += 'Cross '
 
         ax.set_title(f'Prediction: {predicted_shapes}\nTarget: {target_shapes}')

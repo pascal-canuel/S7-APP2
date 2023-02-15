@@ -95,6 +95,8 @@ class ConveyorCnnTrainer():
         self._model.eval()
 
         test_loss = 0
+        idx = 0
+
         with torch.no_grad():
             for image, segmentation_target, boxes, class_labels in test_loader:
                 image = image.to(self._device)
@@ -106,12 +108,23 @@ class ConveyorCnnTrainer():
                                         image, segmentation_target, boxes, class_labels)
                 test_loss += loss.item()
 
+                prediction = self._model(image)
+
+                batch_size = image.shape[0]
+                for i in range(batch_size):
+                    visualizer.set_prediction_path(idx)
+                    idx += 1
+
+                    visualizer.show_prediction(image[i], prediction[i], segmentation_target[i], boxes[i], class_labels[i])
+
         test_loss /= len(dataset_test)
         print('Test - Average loss: {:.6f}, {}: {:.6f}'.format(
             test_loss, test_metric.get_name(), test_metric.get_value()))
 
-        prediction = self._model(image)
-        visualizer.show_prediction(image[0], prediction[0], segmentation_target[0], boxes[0], class_labels[0])
+        # prediction = self._model(image)
+        # visualizer.show_prediction(image[0], prediction[0], segmentation_target[0], boxes[0], class_labels[0])
+
+
 
     def train(self):
         epochs_train_losses = []
@@ -201,6 +214,7 @@ class ConveyorCnnTrainer():
                 validation_loss, validation_metric.get_name(), validation_metric_value))
 
             prediction = self._model(image)
+            visualizer.set_prediction_path(123456789) # big number
             visualizer.show_prediction(image[0], prediction[0], masks[0], boxes[0], labels[0])
             visualizer.show_learning_curves(epochs_train_losses, epochs_validation_losses,
                                             epochs_train_metrics, epochs_validation_metrics,

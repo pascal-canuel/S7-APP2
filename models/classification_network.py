@@ -11,8 +11,10 @@ class ClassificationNetwork(nn.Module):
     def __init__(self):
         super(ClassificationNetwork, self).__init__()
 
+        # TODO: test with stride of 2
         self.conv_1_1 = nn.Conv2d(in_channels=INPUT_CHANNELS, out_channels=32, kernel_size=(5, 5), padding=2, stride=1)
         self.relu_1_1 = nn.ReLU()
+        # TODO: test with max pool with stride of 1
         self.conv_2_1 = nn.Conv2d(in_channels=32, out_channels=32, kernel_size=(3, 3), padding=1, stride=1)
         self.relu_2_1 = nn.ReLU()
         self.conv_3_1 = nn.Conv2d(in_channels=32, out_channels=32, kernel_size=(3, 3), padding=1, stride=1)
@@ -40,6 +42,7 @@ class ClassificationNetwork(nn.Module):
         y = self.relu_4_1(y)
         y = self.maxpool_5(y)
         y = y.view(y.shape[0], -1)
+        # torch.flatten(y, start_dim=1)
         y = self.lin_6(y)
         y = self.relu_6(y)
         y = self.lin_7(y)
