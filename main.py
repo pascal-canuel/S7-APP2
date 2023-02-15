@@ -356,8 +356,8 @@ if __name__ == '__main__':
 
     if args.mode == 'train':
         print('\n--- Training mode ---\n')
-
         conv.train()
+
     elif args.mode == 'test':
         print('\n--- Testing mode ---\n')
         conv.test()
