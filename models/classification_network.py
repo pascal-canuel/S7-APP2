@@ -14,20 +14,19 @@ class ClassificationNetwork(nn.Module):
         relu = nn.ReLU()
 
         self._classifier = nn.Sequential(
-            nn.Conv2d(in_channels=INPUT_CHANNELS, out_channels=32, kernel_size=5, padding=2),
+            nn.Conv2d(in_channels=INPUT_CHANNELS, out_channels=32, kernel_size=5, padding=2, stride=2),
             relu,
             nn.Conv2d(in_channels=32, out_channels=64, kernel_size=3, padding=1),
             relu,
-            nn.MaxPool2d(kernel_size=3, stride=2),
             nn.Conv2d(in_channels=64, out_channels=32, kernel_size=3, padding=1),
             relu,
             nn.Conv2d(in_channels=32, out_channels=32, kernel_size=3, padding=1),
             relu,
             nn.MaxPool2d(kernel_size=3, stride=2),
             nn.Flatten(),
-            nn.Linear(in_features=32 * 12 * 12, out_features=32),
+            nn.Linear(in_features=32 * 13 * 13, out_features=28),
             relu,
-            nn.Linear(in_features=32, out_features=32),
+            nn.Linear(in_features=28, out_features=32),
             relu,
             nn.Linear(in_features=32, out_features=N_CLASSES),
             nn.Sigmoid()
