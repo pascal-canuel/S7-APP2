@@ -11,10 +11,8 @@ from dataset import ConveyorSimulator
 from metrics import AccuracyMetric, MeanAveragePrecisionMetric, SegmentationIntersectionOverUnionMetric
 from visualizer import Visualizer
 
-from loss_function import LocalizationLoss
-
 from models.classification_network import ClassificationNetwork
-from models.detection_network import DetectionNetwork
+from models.detection_network import DetectionNetwork, DetectionLoss
 from models.segmentation_network import SegmentationNetwork
 
 TRAIN_VALIDATION_SPLIT = 0.9
@@ -63,7 +61,7 @@ class ConveyorCnnTrainer():
         if task == 'classification':
             return torch.nn.BCELoss(reduction='sum')
         elif task == 'detection':
-            return LocalizationLoss()
+            return DetectionLoss()
         elif task == 'segmentation':
             return torch.nn.CrossEntropyLoss(reduction='sum')
         else:

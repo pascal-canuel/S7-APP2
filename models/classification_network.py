@@ -29,7 +29,7 @@ class ClassificationNetwork(nn.Module):
             nn.Linear(in_features=28, out_features=32),
             relu,
             nn.Linear(in_features=32, out_features=N_CLASSES),
-            nn.Sigmoid()
+            nn.Sigmoid(),
         )
 
     def forward(self, x):
